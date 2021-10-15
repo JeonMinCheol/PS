@@ -7,7 +7,7 @@ bool visited[9];
 vector<int>graph[9];
 
 
-//DFS 함수 정의
+//DFS 함수 정의.
 void dfs(int x) {
     visited[x] = 1;
     cout << x << " ";
