@@ -1,32 +1,38 @@
 #include<iostream>
-#include<vector>
-#include<algorithm>
+#include<queue>
 using namespace std;
 
-int n;
-int map[25][25];
-vector<int>house;
-int cnt = 0;
+int n, m;
+int map[100][100];
+pair<int, int> xy[4] = { {1,0},{-1,0},{0,1},{0,-1} };
+void bfs() {
+	queue<pair<int, int>>q;
+	q.push({ 0,0 });
 
-int dx[4] = { 1,-1,0,0 };
-int dy[4] = { 0,0,1,-1, };
+	while (!q.empty()) {
+		int x = q.front().first;
+		int y = q.front().second;
+		q.pop();
 
-void dfs(int x, int y) {
-	cnt++;
-	map[x][y] = 0;
+		for (int i = 0; i < 4; i++) {
+			int nx = x + xy[i].first;
+			int ny = y + xy[i].second;
 
-	for (int i = 0; i < 4; i++) {
-		if (0 <= x + dx[i] && x + dx[i] < n && 0 <= y + dy[i] && y + dy[i] < n) {
-			if(map[x + dx[i]][y + dy[i]] == 1) dfs(x + dx[i] , y + dy[i]);
+			if (nx < 0 || ny < 0 || n <= nx || m <= ny) {
+				continue;
+			}
+			else if (map[nx][ny] != 1) {
+				continue;
+			}
+			q.push({ nx,ny });
+			map[nx][ny] = map[x][y] + 1;
 		}
 	}
 }
-
 int main() {
-	cin >> n;
-
+	cin >> n >> m;
 	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
+		for (int j = 0; j < m; j++) {
 			char c;
 			cin >> c;
 
@@ -34,19 +40,7 @@ int main() {
 		}
 	}
 
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			if (map[i][j] == 1) {
-				dfs(i, j);
-				house.push_back(cnt);
-				cnt = 0;
-			}
-		}
-	}
-
-	sort(house.begin(), house.end());
-	cout << house.size()<<endl;
-	for (auto elem : house) {
-		cout << elem<<endl;
-	}
+	bfs();
+	cout << map[n - 1][m - 1];
+	return 0;
 }
