@@ -1,4 +1,4 @@
-# Study_file
+# README
 
 ### 로컬저장소 위치 
 
