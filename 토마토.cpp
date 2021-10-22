@@ -2,73 +2,56 @@
 #include<queue>
 using namespace std;
 
-int n, m, k;
-int map[1001][1001];
-pair<int, int>p[4] = { {1,0}, {-1,0},{0,1},{0,-1} };
-void bfs(int x, int y) {
-	queue<pair<int, int>> q;
-	q.push({ x,y });
+int n, m, day = -1;
+int map[1000][1000];
 
-	while (!q.empty()) {
-		x = q.front().first;
-		y = q.front().second;
+queue<pair<int, int>> q;
+pair<int, int>p[4] = { {1,0}, {-1,0},{0,1},{0,-1} };
+
+void bfs() {
+	while (!q.empty())
+	{
+		pair<int, int> cur = q.front();
 		q.pop();
 
-		for (int i = 0; i < 4; i++) {
-			int row = x + p[i].first;
-			int col = y + p[i].second;
+		for (int l = 0; l < 4; l++)
+		{
+			int nx = cur.first + p[l].first;
+			int ny = cur.second + p[l].second;
+			if (nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
 
-			if (row < 1 || col < 1 || n < row || m < col) {
-				continue;
-			}
-			else if (map[row][col] == 0) {
-				map[row][col] = map[x][y] + 1;
-				q.push({ row,col });
-				k = map[row][col];
-			}
+			if (map[nx][ny] != 0) continue;
+
+			map[nx][ny] = map[cur.first][cur.second] + 1;
+
+			q.push({ nx,ny });
+
+			day = max(day, map[nx][ny]);
 		}
 	}
 }
 
 int main() {
 	cin >> m >> n;
-	for (int i = 1; i <= n; i++) {
-		for (int j = 1; j <= m; j++) {
+	bool zero = false;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
 			cin >> map[i][j];
 
+			if (map[i][j] == 1) q.push({ i,j });
+			else if (map[i][j] == 0) zero = true;
 		}
 	}
 
-	int cnt = 0;
-	for (int i = 1; i <= n; i++) {
-		for (int j = 1; j <= m; j++) {
-			if (map[i][j] != 0) {
-				cnt++;
-			}
-		}
-	}
-
-	if (cnt == n * m) {
+	if (!zero) {
 		cout << 0;
 		return 0;
 	}
 
-	for (int i = 1; i <= n; i++) {
-		for (int j = 1; j <= m; j++) {
-			if (map[i][j] != 0 && map[i][j] != -1) {
-				bfs(i, j);
-			}
-		}
-	}
+	bfs();
 
-	for (int i = 1; i <= n; i++) {
-		for (int j = 1; j <= m; j++) {
-			cout << map[i][j] << " ";
-		}
-		cout << endl;
-	}
-	for (int i = 1; i <= n; i++) {
-		for (int j = 1; j <= m; j++) {
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
 			if (map[i][j] == 0) {
 				cout << -1;
 				return 0;
@@ -76,5 +59,5 @@ int main() {
 		}
 	}
 
-	cout << k;
+	cout << day - 1;
 }
