@@ -1,14 +1,15 @@
 #include<iostream> 
-#include<string> 
-#include<algorithm> 
 using namespace std;
+
 string x;
 int result = 1 , Size;
+
 void cnt(string x) {
 	for (int i = 0; i < x.size(); i++) {
 		if (x[i] == '*') result++;
 	}
 }
+
 int main() {
 	cin >> Size >> x;
 	for (int i = 1; i < Size; i++) {
