@@ -9,7 +9,6 @@ void cnt(string x) {
 		if (x[i] == '*') result++;
 	}
 }
-
 int main() {
 	cin >> Size >> x;
 	for (int i = 1; i < Size; i++) {
