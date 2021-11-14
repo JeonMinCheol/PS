@@ -2,62 +2,72 @@
 #include<queue>
 using namespace std;
 
-int n, m, day = -1;
-int map[1000][1000];
+queue<pair<int, pair<int, int>>>q; // height , pair<row,col>
+int row, col, height;
+int tomato[100][100][100];
+int dh[6] = { 1,-1,0,0,0,0 };
+int dr[6] = { 0,0,1,-1,0,0 };
+int dc[6] = { 0,0,0,0,1,-1 };
 
-queue<pair<int, int>> q;
-pair<int, int>p[4] = { {1,0}, {-1,0},{0,1},{0,-1} };
+void bfs(int z, int y, int x) {
+	int max_day = 0;
 
-void bfs() {
-	while (!q.empty())
-	{
-		pair<int, int> cur = q.front();
+	while (!q.empty()) {
+		int h = q.front().first;
+		int r = q.front().second.first;
+		int c = q.front().second.second;
+		int count = tomato[h][r][c];
 		q.pop();
 
-		for (int l = 0; l < 4; l++)
-		{
-			int nx = cur.first + p[l].first;
-			int ny = cur.second + p[l].second;
-			if (nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
+		for (int i = 0; i < 6; i++) {
+			int nh = h + dh[i];
+			int nr = r + dr[i];
+			int nc = c + dc[i];
 
-			if (map[nx][ny] != 0) continue;
-
-			map[nx][ny] = map[cur.first][cur.second] + 1;
-
-			q.push({ nx,ny });
-
-			day = max(day, map[nx][ny]);
+			if (nh < 0 || nr < 0 || nc < 0 || height <= nh || row <= nr || col <= nc) continue;
+			if (tomato[nh][nr][nc] != 0) continue;
+			q.push({ nh,{nr,nc} });
+			tomato[nh][nr][nc] = count + 1;
 		}
 	}
 }
-
 int main() {
-	cin >> m >> n;
-	bool zero = false;
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < m; j++) {
-			cin >> map[i][j];
-
-			if (map[i][j] == 1) q.push({ i,j });
-			else if (map[i][j] == 0) zero = true;
+	cin >> col >> row >> height;
+	int raw = 0;
+	for (int h = height - 1; h >= 0; h--) {
+		for (int r = 0; r < row; r++) {
+			for (int c = 0; c < col; c++) {
+				cin >> tomato[h][r][c];
+				if (tomato[h][r][c] == 0) raw++;
+				else if (tomato[h][r][c] == 1) q.push({ h,{r,c} });
+			}
 		}
 	}
-
-	if (!zero) {
+	if (raw == 0) {
 		cout << 0;
 		return 0;
 	}
 
-	bfs();
-
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < m; j++) {
-			if (map[i][j] == 0) {
-				cout << -1;
-				return 0;
+	for (int h = height - 1; h >= 0; h--) {
+		for (int r = 0; r < row; r++) {
+			for (int c = 0; c < col; c++) {
+				if (tomato[h][r][c] == 1) bfs(h, r, c);
 			}
 		}
 	}
 
-	cout << day - 1;
+	int max = 0;
+	for (int h = height - 1; h >= 0; h--) {
+		for (int r = row - 1; r >= 0; r--) {
+			for (int c = 0; c < col; c++) {
+				if (tomato[h][r][c] == 0) {
+					cout << -1;
+					return 0;
+				}
+				if (tomato[h][r][c] > max) max = tomato[h][r][c];
+			}
+		}
+	}
+	cout << max - 1;
+	return 0;
 }
