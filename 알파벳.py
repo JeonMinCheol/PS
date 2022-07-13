@@ -1,44 +1,32 @@
-def dfs(visit,graph,row,col):
-    visit[row][col] = True
-    arr = [i for i in graph[row][col]]
-    ret = 1
-    dx = [1,-1,0,0]
-    dy = [0,0,1,-1]
-    for i in range(4):
-        if r <= row+dy[i] or row + dy[i] < 0 or c <= col + dx[i] or col + dx[i] < 0:
-            continue
-        if visit[row + dy[i]][col + dx[i]] == True:
-            continue
-        if Alphabet[row + dy[i]][col + dx[i]] in graph[row][col]:
-            continue
-        
-        arr.append(Alphabet[row + dy[i]][col + dx[i]])
-        
-        graph[row + dy[i]][col + dx[i]] = arr
+import sys
+sys.setrecursionlimit(10**5)
+input = sys.stdin.readline
 
-        
-        ret = max(dfs(visit,graph,row+dy[i],col + dx[i]) + 1, ret)
-
-    return ret
-
+graph = []
+visit = [False] * 26
 r,c = map(int,input().split())
-Alphabet = []
-visit = [[False]*c for _ in range(r)]
-graph = [[[]]*c for _ in range(r)]
-for i in range(r):
-    arr = []
-    string = input()
-    for j in range(c):
-        arr.append(string[j])
-    Alphabet.append(arr)
+dir = [[1,0],[-1,0],[0,1],[0,-1]]
 
-graph[0][0].append(Alphabet[0][0])
 ret = 0
+def dfs(row, col, cnt):
+    global ret
+    currentVal = graph[row][col]
+    visit[ord(currentVal) - 65] = True
+    ret = max(ret, cnt )
+
+    for i in range(4):
+        newRow = row + dir[i][0]
+        newCol = col + dir[i][1]
+        if 0 <= newRow < r and 0 <= newCol < c:
+            nextVal = graph[newRow][newCol]
+            nextIndex = ord(nextVal) - 65
+            if visit[nextIndex] == False:
+                dfs(newRow,newCol,cnt + 1)
+                visit[nextIndex] = False
+
+
+
 for i in range(r):
-    for j in range(c):
-        if visit[i][j] == False:
-            ret = max(ret,dfs(visit,graph,i,j))
-            
-for i in range(r):
-    print(graph[i])
+    graph.append(input())
+dfs(0,0,1)
 print(ret)
