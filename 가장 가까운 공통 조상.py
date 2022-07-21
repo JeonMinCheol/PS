@@ -12,7 +12,6 @@ def dfs(ret, node, visit, level):
 
 test = int(input())
 
-
 while test:
     test -= 1
     Node = int(input())
