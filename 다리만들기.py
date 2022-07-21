@@ -27,7 +27,31 @@ def findEdge(row,col):
     return ret
 
 def dfs(row, col, cnt):
-# 매번 dfs해가면서 가장 짧은 거리 찾을 거임.ㅇ
+    # 매번 dfs해가면서 가장 짧은 거리 찾을 거임.
+    global ret
+    dir = [[1,0],[-1,0],[0,1],[0,-1]]
+    for i in range(4):
+        newRow = row + dir[i][0]
+        newCol = col + dir[i][1]
+        if 0 <= newRow < n and 0 <= newCol < n:
+            if visit[newRow][newCol] != 0 and visit[newRow][newCol] < cnt:
+                cnt = visit[newRow][newCol] + 1
+    visit[row][col] = cnt
+
+    for i in range(4):
+        newRow = row + dir[i][0]
+        newCol = col + dir[i][1]
+        if 0 <= newRow < n and 0 <= newCol < n:
+            if visit[newRow][newCol] == False:
+                if cnt <= ret:
+                    for subset in edge:
+                        if (newRow,newCol) in subset:
+                            ret=min(ret,cnt-1)
+                    ret = min(dfs(newRow,newCol,cnt+1),ret)
+    return ret
+
+
+
 
 n = int(input())
 visit = [[False] * n for _ in range(n)]
@@ -44,16 +68,13 @@ for i in range(n):
 
 ret = 99999999
 for i in range(len(edge)):
-    # 제출시 지울것!!!!!  
-    print("%s: %s"%(i+1,edge[i]))
-    visit = [[False] * n for _ in range(n)]
-    
+    # 같은 대륙에 방문하지 못하도록 방문처리
     arr = list(edge[i])
-    for a in arr:
-        # 같은 대륙에 방문하지 못하도록 방문처리
-        for j in arr:
-            row = j[0], col = j[1]
-            visit[row][col] = True
-        #dfs(*)
 
+    for a in arr:
+        visit = [[0] * n for _ in range(n)]
+        for j in arr:
+            visit[j[0]][j[1]] = True
+        ret = min(dfs(a[0],a[1],1),ret)
+print(ret)
     
