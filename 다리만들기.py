@@ -26,6 +26,7 @@ def findEdge(row,col):
                         visit[newRow][newCol] = True
     return ret
 
+
 def dfs(row, col, cnt):
     # 매번 dfs해가면서 가장 짧은 거리 찾을 거임.
     global ret
@@ -49,8 +50,6 @@ def dfs(row, col, cnt):
                             ret=min(ret,cnt-1)
                     ret = min(dfs(newRow,newCol,cnt+1),ret)
     return ret
-
-
 
 
 n = int(input())
