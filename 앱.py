@@ -4,9 +4,9 @@ n, m = map(int, input().split())
 
 memory = list(map(int,input().split()))
 cost = list(map(int,input().split()))
-arr = []
-for i in range(n):
-    arr.append([cost[i],memory[i]])
 
-arr = sorted(arr)
-print(arr)
+dp = [[0] * 100 for _ in range(n)]
+dp[0][cost[0]] = memory 
+for i in range(1, n):
+    
+    for j in range(m):
